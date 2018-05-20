@@ -1,0 +1,32 @@
+version: '2'
+services:
+  mongo:
+    image: mongo
+    environment:
+      - MONGODB_DATABASE=test
+      - MONGODB_USER=admin
+      - MONGODB_PASS=qwerty123
+    volumes:
+      - ./mongodb:/data/db
+    ports:
+      - "27017:27017"
+  jupyter:
+    image: learn_ai
+    container_name: jupyter
+    command: bash -c "jupyter notebook --allow-root"
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "8888:8888"
+    links:
+      - tensor
+      - mongo
+
+  tensor:
+    image: learn_ai
+    container_name: tensor_board
+    command: bash -c "tensorboard --logdir=/usr/src/app/"
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "6006:6006"
